@@ -1,0 +1,46 @@
+document.addEventListener('DOMContentLoaded', () => {
+    let screenArray = []
+    let screen = document.querySelector('#screen')
+    const actions = {
+        '+'(){ addToScreen("+") },
+        '-'(){ addToScreen("-") },
+        '÷'(){ addToScreen("/") },
+        'x'(){ addToScreen("*") },
+        '='(){
+            if (
+                screen.innerText === 'undefined'
+                || screen.innerText.includes("/0")
+            ){
+                screen.innerText = 'error'
+            } else {
+                screen.innerText = eval(screen.innerText)
+                screenArray = []
+            }
+        },
+        'C': function(){
+            screen.innerText = ''
+            screenArray = []
+        },
+        default: function(character){
+            screenArray.push(character)
+            screen.innerText = screenArray.join('')
+        }
+    }
+    initialize()
+    function addToScreen(character){
+        screen.innerText += character
+        screenArray.push(character)
+    }
+    function initialize(){
+        document.querySelectorAll(".buttons span").forEach(assignAction)
+    }
+    function assignAction(button){
+        button
+            .addEventListener('click', () => performAction(button.innerText))
+    }
+    function performAction(character){
+        actions[character]
+            ? actions[character]()
+            : actions.default(character)
+    }
+})
